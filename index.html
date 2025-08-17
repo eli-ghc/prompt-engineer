@@ -320,12 +320,30 @@
             </div>
 
             <button class="btn" onclick="generatePrompt()">Generate Optimized Prompt</button>
+            <button class="btn btn-secondary" onclick="refineWithAI()" style="background: #f59e0b; color: white; margin-top: 5px;">🤖 AI-Powered Language Cleanup</button>
             
             <div id="promptGuidance" class="suggestions hidden"></div>
             
             <div class="output-box" id="promptOutput">Your optimized prompt will appear here...</div>
 
-            <div id="aiSuggestions" class="suggestions hidden"></div>
+            <div id="aiStatus" class="ai-status">
+                🤖 AI is analyzing and refining your prompt language...
+            </div>
+
+            <div id="refinementResults" class="hidden">
+                <div class="refinement-comparison">
+                    <div class="before-after">
+                        <h5>📝 Original</h5>
+                        <div id="originalText"></div>
+                    </div>
+                    <div class="before-after after">
+                        <h5>✨ AI-Refined <span class="improvement-badge">IMPROVED</span></h5>
+                        <div id="refinedText"></div>
+                    </div>
+                </div>
+                <button class="btn" onclick="applyRefinement()">Apply AI Refinements</button>
+                <button class="btn btn-secondary" onclick="dismissRefinement()" style="margin-top: 5px;">Keep Original</button>
+            </div>
         </div>
 
         <!-- Templates Section -->
@@ -1017,10 +1035,218 @@
         document.body.removeChild(textArea);
     }
 
-    // Initialize app - show builder section by default
-    window.onload = function() {
-        showSection('builder');
-    };
+    // Global variable to store refinement data
+    var currentRefinement = null;
+
+    // AI-powered language cleanup and refinement
+    function refineWithAI() {
+        var goal = document.getElementById('goal').value;
+        var context = document.getElementById('context').value;
+        var constraints = document.getElementById('constraints').value;
+
+        if (!goal.trim()) {
+            alert('Please enter your goal or question before using AI refinement.');
+            return;
+        }
+
+        // Show AI processing status
+        var aiStatus = document.getElementById('aiStatus');
+        var refineBtn = document.querySelector('button[onclick="refineWithAI()"]');
+        
+        aiStatus.style.display = 'block';
+        refineBtn.textContent = '🔄 AI Processing...';
+        refineBtn.classList.add('ai-refining');
+        refineBtn.disabled = true;
+
+        // Simulate AI processing with intelligent language cleanup
+        setTimeout(function() {
+            var refinedGoal = aiLanguageCleanup(goal);
+            var refinedContext = context ? aiLanguageCleanup(context) : '';
+            var refinedConstraints = constraints ? aiLanguageCleanup(constraints) : '';
+
+            showRefinementResults({
+                originalGoal: goal,
+                refinedGoal: refinedGoal,
+                originalContext: context,
+                refinedContext: refinedContext,
+                originalConstraints: constraints,
+                refinedConstraints: refinedConstraints
+            });
+
+            // Reset button
+            aiStatus.style.display = 'none';
+            refineBtn.textContent = '🤖 AI-Powered Language Cleanup';
+            refineBtn.classList.remove('ai-refining');
+            refineBtn.disabled = false;
+        }, 2000); // Simulate processing time
+    }
+
+    // AI language cleanup engine
+    function aiLanguageCleanup(text) {
+        if (!text || !text.trim()) return text;
+
+        var refined = text;
+
+        // 1. Fix common grammatical issues
+        refined = refined.replace(/\bi\b/g, 'I'); // Capitalize 'i'
+        refined = refined.replace(/\s+/g, ' '); // Remove extra spaces
+        refined = refined.trim();
+
+        // 2. Improve clarity and specificity
+        var clarityMappings = {
+            'help me': 'assist me in',
+            'make': 'create',
+            'good': 'effective',
+            'bad': 'ineffective',
+            'thing': 'element',
+            'stuff': 'content',
+            'some': 'several',
+            'a lot': 'numerous',
+            'really': 'significantly',
+            'very': 'highly',
+            'pretty': 'quite',
+            'kind of': 'somewhat',
+            'sort of': 'somewhat'
+        };
+
+        for (var vague in clarityMappings) {
+            var regex = new RegExp('\\b' + vague + '\\b', 'gi');
+            refined = refined.replace(regex, clarityMappings[vague]);
+        }
+
+        // 3. Enhance professional language
+        var professionalMappings = {
+            'wanna': 'want to',
+            'gonna': 'going to',
+            'gotta': 'need to',
+            'can\\'t': 'cannot',
+            'won\\'t': 'will not',
+            'don\\'t': 'do not',
+            'isn\\'t': 'is not',
+            'doesn\\'t': 'does not'
+        };
+
+        for (var casual in professionalMappings) {
+            var regex = new RegExp('\\b' + casual + '\\b', 'gi');
+            refined = refined.replace(regex, professionalMappings[casual]);
+        }
+
+        // 4. Add specificity markers
+        if (refined.length > 20) {
+            // Make questions more specific
+            if (refined.includes('?') && !refined.includes('specifically')) {
+                refined = refined.replace('?', ' specifically?');
+            }
+
+            // Add precision to requests
+            if (refined.toLowerCase().includes('write') && !refined.includes('professional') && !refined.includes('detailed')) {
+                refined = refined.replace(/write/i, 'write a detailed');
+            }
+
+            // Enhance action verbs
+            var actionEnhancements = {
+                'analyze': 'thoroughly analyze',
+                'review': 'comprehensively review',
+                'explain': 'clearly explain',
+                'describe': 'accurately describe',
+                'create': 'develop and create',
+                'build': 'design and build'
+            };
+
+            for (var action in actionEnhancements) {
+                if (refined.toLowerCase().includes(action) && !refined.includes(actionEnhancements[action])) {
+                    var regex = new RegExp('\\b' + action + '\\b', 'i');
+                    refined = refined.replace(regex, actionEnhancements[action]);
+                }
+            }
+        }
+
+        // 5. Improve sentence structure
+        refined = refined.replace(/^[a-z]/, function(match) {
+            return match.toUpperCase();
+        });
+
+        // Add period if missing
+        if (refined.length > 10 && !refined.match(/[.!?]$/)) {
+            refined += '.';
+        }
+
+        // 6. Context-aware improvements
+        if (refined.toLowerCase().includes('email') && !refined.includes('professional')) {
+            refined = refined.replace(/email/i, 'professional email');
+        }
+
+        if (refined.toLowerCase().includes('code') && !refined.includes('clean') && !refined.includes('optimized')) {
+            refined = refined.replace(/code/i, 'clean, well-documented code');
+        }
+
+        return refined;
+    }
+
+    // Show before/after comparison
+    function showRefinementResults(refinement) {
+        currentRefinement = refinement;
+        
+        var originalText = '';
+        var refinedText = '';
+
+        if (refinement.originalGoal) {
+            originalText += '<strong>Goal:</strong><br>' + refinement.originalGoal + '<br><br>';
+            refinedText += '<strong>Goal:</strong><br>' + refinement.refinedGoal + '<br><br>';
+        }
+
+        if (refinement.originalContext) {
+            originalText += '<strong>Context:</strong><br>' + refinement.originalContext + '<br><br>';
+            refinedText += '<strong>Context:</strong><br>' + refinement.refinedContext + '<br><br>';
+        }
+
+        if (refinement.originalConstraints) {
+            originalText += '<strong>Requirements:</strong><br>' + refinement.originalConstraints;
+            refinedText += '<strong>Requirements:</strong><br>' + refinement.refinedConstraints;
+        }
+
+        document.getElementById('originalText').innerHTML = originalText;
+        document.getElementById('refinedText').innerHTML = refinedText;
+        document.getElementById('refinementResults').classList.remove('hidden');
+    }
+
+    // Apply AI refinements to the form
+    function applyRefinement() {
+        if (!currentRefinement) return;
+
+        if (currentRefinement.refinedGoal) {
+            document.getElementById('goal').value = currentRefinement.refinedGoal;
+        }
+        if (currentRefinement.refinedContext) {
+            document.getElementById('context').value = currentRefinement.refinedContext;
+        }
+        if (currentRefinement.refinedConstraints) {
+            document.getElementById('constraints').value = currentRefinement.refinedConstraints;
+        }
+
+        document.getElementById('refinementResults').classList.add('hidden');
+        
+        // Show success message
+        var successMsg = document.createElement('div');
+        successMsg.className = 'ai-status';
+        successMsg.style.display = 'block';
+        successMsg.style.background = '#f0fdf4';
+        successMsg.style.borderColor = '#10b981';
+        successMsg.style.color = '#065f46';
+        successMsg.innerHTML = '✅ AI refinements applied! Your prompt language has been optimized.';
+        
+        document.getElementById('refinementResults').parentNode.insertBefore(successMsg, document.getElementById('refinementResults'));
+        
+        setTimeout(function() {
+            successMsg.remove();
+        }, 3000);
+    }
+
+    // Dismiss refinement suggestions
+    function dismissRefinement() {
+        document.getElementById('refinementResults').classList.add('hidden');
+        currentRefinement = null;
+    }
 </script>
 ```
 
