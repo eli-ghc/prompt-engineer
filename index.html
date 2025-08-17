@@ -70,11 +70,14 @@
         padding: 12px;
         text-align: center;
         border-radius: 10px;
-        cursor: pointer;
         transition: all 0.3s ease;
         font-weight: 600;
         -webkit-tap-highlight-color: transparent;
         user-select: none;
+        background: transparent;
+        border: none;
+        font-size: 14px;
+        color: #6b7280;
     }
 
     .tab.active {
@@ -134,29 +137,19 @@
         border-radius: 10px;
         font-size: 16px;
         font-weight: 600;
-        cursor: pointer;
         transition: all 0.3s ease;
         width: 100%;
         margin-top: 10px;
-    }
-
-    .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        -webkit-tap-highlight-color: transparent;
     }
 
     .btn:active {
-        transform: translateY(0);
+        transform: scale(0.98);
     }
 
     .btn-secondary {
         background: #f3f4f6;
         color: #374151;
-    }
-
-    .btn-secondary:hover {
-        background: #e5e7eb;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
     .prompt-output {
@@ -168,6 +161,7 @@
         min-height: 100px;
         font-family: 'Monaco', 'Menlo', monospace;
         white-space: pre-wrap;
+        position: relative;
     }
 
     .suggestions {
@@ -204,14 +198,13 @@
         border: 2px solid #e5e7eb;
         border-radius: 10px;
         padding: 15px;
-        cursor: pointer;
         transition: all 0.3s ease;
+        -webkit-tap-highlight-color: transparent;
     }
 
-    .template-card:hover {
+    .template-card:active {
+        transform: scale(0.98);
         border-color: #6366f1;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(99, 102, 241, 0.1);
     }
 
     .template-card h4 {
@@ -247,7 +240,7 @@
         padding: 5px 10px;
         border-radius: 5px;
         font-size: 12px;
-        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
     }
 
     .output-container {
@@ -266,6 +259,10 @@
         .card {
             padding: 20px;
         }
+
+        .template-grid {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 ```
@@ -281,10 +278,10 @@
 ```
     <div class="card">
         <div class="tabs">
-            <div class="tab active" onclick="switchTab('builder')">Builder</div>
-            <div class="tab" onclick="switchTab('templates')">Templates</div>
-            <div class="tab" onclick="switchTab('analyzer')">Analyzer</div>
-            <div class="tab" onclick="switchTab('guide')">Guide</div>
+            <button class="tab active" data-tab="builder">Builder</button>
+            <button class="tab" data-tab="templates">Templates</button>
+            <button class="tab" data-tab="analyzer">Analyzer</button>
+            <button class="tab" data-tab="guide">Guide</button>
         </div>
 
         <!-- Prompt Builder Tab -->
@@ -293,7 +290,7 @@
             
             <div class="form-group">
                 <label>What type of task do you need help with?</label>
-                <select id="taskType" onchange="updateGuidance()">
+                <select id="taskType">
                     <option value="">Select a task type...</option>
                     <option value="writing">Writing & Content Creation</option>
                     <option value="analysis">Analysis & Research</option>
@@ -332,13 +329,13 @@
                 <input type="text" id="constraints" placeholder="e.g., Keep it under 200 words, professional tone, include specific keywords...">
             </div>
 
-            <button class="btn" onclick="generatePrompt()">Generate Optimized Prompt</button>
+            <button class="btn" id="generateBtn">Generate Optimized Prompt</button>
             
             <div id="promptGuidance" class="suggestions" style="display: none;"></div>
             
             <div class="output-container">
                 <div id="promptOutput" class="prompt-output">Your optimized prompt will appear here...</div>
-                <button class="copy-btn" onclick="copyPrompt()" style="display: none;" id="copyBtn">Copy</button>
+                <button class="copy-btn" id="copyBtn" style="display: none;">Copy</button>
             </div>
 
             <div id="aiSuggestions" class="suggestions" style="display: none;"></div>
@@ -347,37 +344,37 @@
         <!-- Templates Tab -->
         <div id="templates" class="tab-content">
             <h3>Quick Start Templates</h3>
-            <p>Click any template to customize it for your needs:</p>
+            <p>Tap any template to customize it for your needs:</p>
             
             <div class="template-grid">
-                <div class="template-card" onclick="loadTemplate('writing')">
+                <div class="template-card" data-template="writing">
                     <h4>✍️ Content Writing</h4>
                     <p>Blog posts, articles, marketing copy</p>
                 </div>
-                <div class="template-card" onclick="loadTemplate('email')">
+                <div class="template-card" data-template="email">
                     <h4>📧 Email Assistant</h4>
                     <p>Professional emails, responses, outreach</p>
                 </div>
-                <div class="template-card" onclick="loadTemplate('code')">
+                <div class="template-card" data-template="code">
                     <h4>💻 Code Helper</h4>
                     <p>Programming, debugging, explanations</p>
                 </div>
-                <div class="template-card" onclick="loadTemplate('analysis')">
+                <div class="template-card" data-template="analysis">
                     <h4>📊 Data Analysis</h4>
                     <p>Research, insights, summaries</p>
                 </div>
-                <div class="template-card" onclick="loadTemplate('creative')">
+                <div class="template-card" data-template="creative">
                     <h4>🎨 Creative Projects</h4>
                     <p>Brainstorming, storytelling, ideas</p>
                 </div>
-                <div class="template-card" onclick="loadTemplate('learning')">
+                <div class="template-card" data-template="learning">
                     <h4>📚 Learning Coach</h4>
                     <p>Explanations, tutorials, study guides</p>
                 </div>
             </div>
 
             <div id="templateOutput" class="prompt-output" style="display: none;">
-                <button class="copy-btn" onclick="copyTemplate()">Copy</button>
+                <button class="copy-btn" id="copyTemplateBtn">Copy</button>
             </div>
         </div>
 
@@ -391,7 +388,7 @@
                 <textarea id="analyzePrompt" placeholder="Paste your prompt here for analysis..."></textarea>
             </div>
 
-            <button class="btn" onclick="analyzePrompt()">Analyze & Improve</button>
+            <button class="btn" id="analyzeBtn">Analyze & Improve</button>
             
             <div id="analysisResults" style="display: none;">
                 <div class="suggestions">
@@ -408,7 +405,7 @@
                 <div class="output-container">
                     <h4>Optimized Version:</h4>
                     <div id="optimizedPrompt" class="prompt-output"></div>
-                    <button class="copy-btn" onclick="copyOptimized()" id="copyOptimizedBtn">Copy</button>
+                    <button class="copy-btn" id="copyOptimizedBtn">Copy</button>
                 </div>
             </div>
         </div>
@@ -466,29 +463,208 @@
 </div>
 
 <script>
-    // Tab switching functionality
+    // Global app state
+    const AppState = {
+        currentTab: 'builder',
+        templates: {
+            writing: `Act as a professional content writer with expertise in [TOPIC/INDUSTRY].
+```
+
+Write a [TYPE OF CONTENT] about [SPECIFIC TOPIC] for [TARGET AUDIENCE].
+
+Context:
+
+- Purpose: [inform/persuade/entertain]
+- Tone: [professional/casual/friendly/authoritative]
+- Key points to cover: [LIST KEY POINTS]
+
+Requirements:
+
+- Length: [WORD COUNT]
+- Include relevant examples
+- Use engaging headlines/subheadings
+- Optimize for readability
+
+Please structure the content with clear sections and provide actionable insights.`,
+
+```
+            email: `Act as a professional communication specialist.
+```
+
+Compose a [TYPE OF EMAIL] to [RECIPIENT] regarding [SUBJECT/PURPOSE].
+
+Context:
+
+- Relationship: [professional/personal/first contact]
+- Previous interaction: [BACKGROUND]
+- Desired outcome: [WHAT YOU WANT TO ACHIEVE]
+
+Requirements:
+
+- Tone: [professional/friendly/formal]
+- Length: [brief/detailed]
+- Include clear call-to-action
+- Maintain professional etiquette
+
+Please structure with appropriate greeting, body, and closing.`,
+
+```
+            code: `Act as an experienced [PROGRAMMING LANGUAGE] developer.
+```
+
+Help me [SPECIFIC CODING TASK] for [PROJECT CONTEXT].
+
+Requirements:
+
+- Input: [DESCRIBE INPUT DATA/PARAMETERS]
+- Expected output: [DESCRIBE DESIRED OUTPUT]
+- Constraints: [PERFORMANCE/STYLE/FRAMEWORK REQUIREMENTS]
+- Environment: [RELEVANT TECHNICAL DETAILS]
+
+Please provide:
+
+- Clean, well-commented code
+- Explanation of the approach
+- Any potential edge cases to consider
+- Suggestions for testing or improvement`,
+  
+  ```
+            analysis: `Act as a data analyst and strategic consultant.
+  ```
+
+Analyze [DATA/SITUATION/TOPIC] to provide insights about [SPECIFIC QUESTION/GOAL].
+
+Context:
+
+- Background: [RELEVANT CONTEXT]
+- Stakeholders: [WHO WILL USE THIS ANALYSIS]
+- Decision to be made: [WHAT THIS ANALYSIS WILL INFORM]
+
+Please provide:
+
+- Key findings and trends
+- Actionable recommendations
+- Supporting evidence/reasoning
+- Potential risks or limitations
+
+Format as [executive summary/detailed report/presentation slides].`,
+
+```
+            creative: `Act as a creative consultant and brainstorming facilitator.
+```
+
+Generate creative ideas for [PROJECT/CHALLENGE] targeted at [AUDIENCE].
+
+Context:
+
+- Objective: [WHAT YOU’RE TRYING TO ACHIEVE]
+- Brand/style: [RELEVANT BRAND GUIDELINES OR PREFERENCES]
+- Constraints: [BUDGET/TIME/TECHNICAL LIMITATIONS]
+- Inspiration: [ANY REFERENCES OR EXAMPLES]
+
+Please provide:
+
+- 5-10 diverse creative concepts
+- Brief explanation for each idea
+- Pros and cons of top options
+- Next steps for development
+
+Focus on originality and practical feasibility.`,
+
+```
+            learning: `Act as a knowledgeable instructor and learning facilitator.
+```
+
+Explain [TOPIC/CONCEPT] to someone with [CURRENT KNOWLEDGE LEVEL] who wants to [LEARNING GOAL].
+
+Context:
+
+- Background: [RELEVANT EXPERIENCE OR CONTEXT]
+- Learning style: [VISUAL/AUDITORY/HANDS-ON/READING]
+- Timeline: [HOW QUICKLY THEY NEED TO LEARN]
+- Application: [HOW THEY’LL USE THIS KNOWLEDGE]
+
+Please provide:
+
+- Clear, step-by-step explanation
+- Real-world examples and analogies
+- Practice exercises or applications
+- Resources for further learning
+- Common mistakes to avoid
+
+Use simple language and build concepts progressively.`
+}
+};
+
+```
+    // Initialize app when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeApp();
+    });
+
+    function initializeApp() {
+        // Set up tab listeners
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                switchTab(tabName);
+            });
+        });
+
+        // Set up button listeners
+        document.getElementById('generateBtn').addEventListener('click', generatePrompt);
+        document.getElementById('analyzeBtn').addEventListener('click', analyzePrompt);
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            copyToClipboard('promptOutput', this);
+        });
+        document.getElementById('copyTemplateBtn').addEventListener('click', function() {
+            copyToClipboard('templateOutput', this);
+        });
+        document.getElementById('copyOptimizedBtn').addEventListener('click', function() {
+            copyToClipboard('optimizedPrompt', this);
+        });
+
+        // Set up template card listeners
+        const templateCards = document.querySelectorAll('.template-card');
+        templateCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const templateType = this.getAttribute('data-template');
+                loadTemplate(templateType);
+            });
+        });
+
+        // Set up task type change listener
+        document.getElementById('taskType').addEventListener('change', updateGuidance);
+    }
+
+    // Tab switching
     function switchTab(tabName) {
+        // Update app state
+        AppState.currentTab = tabName;
+
         // Hide all tab contents
         const contents = document.querySelectorAll('.tab-content');
         contents.forEach(content => content.classList.remove('active'));
-        
+
         // Remove active class from all tabs
         const tabs = document.querySelectorAll('.tab');
         tabs.forEach(tab => tab.classList.remove('active'));
-        
-        // Show selected tab content and mark tab as active
-        document.getElementById(tabName).classList.add('active');
-        
-        // Find and activate the clicked tab
-        const clickedTab = Array.from(document.querySelectorAll('.tab')).find(tab => 
-            tab.getAttribute('onclick') && tab.getAttribute('onclick').includes(tabName)
-        );
-        if (clickedTab) {
-            clickedTab.classList.add('active');
+
+        // Show selected tab content
+        const selectedContent = document.getElementById(tabName);
+        if (selectedContent) {
+            selectedContent.classList.add('active');
+        }
+
+        // Mark clicked tab as active
+        const selectedTab = document.querySelector(`[data-tab="${tabName}"]`);
+        if (selectedTab) {
+            selectedTab.classList.add('active');
         }
     }
 
-    // Dynamic guidance based on task type
+    // Dynamic guidance
     function updateGuidance() {
         const taskType = document.getElementById('taskType').value;
         const guidanceDiv = document.getElementById('promptGuidance');
@@ -633,14 +809,6 @@
     function generateSuggestions(prompt, taskType) {
         const suggestionsDiv = document.getElementById('aiSuggestions');
         
-        const suggestions = [
-            "Consider adding specific examples to illustrate your request",
-            "You might want to specify the target audience more clearly",
-            "Adding a word count or length requirement could help",
-            "Consider mentioning the tone or style you prefer",
-            "Think about providing more context about your use case"
-        ];
-
         // Simple analysis - check for common improvements
         const improvements = [];
         
@@ -664,153 +832,22 @@
                 </ul>
             `;
             suggestionsDiv.style.display = 'block';
+        } else {
+            suggestionsDiv.style.display = 'none';
         }
     }
 
-    // Template loading
+    // Load template
     function loadTemplate(type) {
-        const templates = {
-            writing: `Act as a professional content writer with expertise in [TOPIC/INDUSTRY].
-```
-
-Write a [TYPE OF CONTENT] about [SPECIFIC TOPIC] for [TARGET AUDIENCE].
-
-Context:
-
-- Purpose: [inform/persuade/entertain]
-- Tone: [professional/casual/friendly/authoritative]
-- Key points to cover: [LIST KEY POINTS]
-
-Requirements:
-
-- Length: [WORD COUNT]
-- Include relevant examples
-- Use engaging headlines/subheadings
-- Optimize for readability
-
-Please structure the content with clear sections and provide actionable insights.`,
-
-```
-            email: `Act as a professional communication specialist.
-```
-
-Compose a [TYPE OF EMAIL] to [RECIPIENT] regarding [SUBJECT/PURPOSE].
-
-Context:
-
-- Relationship: [professional/personal/first contact]
-- Previous interaction: [BACKGROUND]
-- Desired outcome: [WHAT YOU WANT TO ACHIEVE]
-
-Requirements:
-
-- Tone: [professional/friendly/formal]
-- Length: [brief/detailed]
-- Include clear call-to-action
-- Maintain professional etiquette
-
-Please structure with appropriate greeting, body, and closing.`,
-
-```
-            code: `Act as an experienced [PROGRAMMING LANGUAGE] developer.
-```
-
-Help me [SPECIFIC CODING TASK] for [PROJECT CONTEXT].
-
-Requirements:
-
-- Input: [DESCRIBE INPUT DATA/PARAMETERS]
-- Expected output: [DESCRIBE DESIRED OUTPUT]
-- Constraints: [PERFORMANCE/STYLE/FRAMEWORK REQUIREMENTS]
-- Environment: [RELEVANT TECHNICAL DETAILS]
-
-Please provide:
-
-- Clean, well-commented code
-- Explanation of the approach
-- Any potential edge cases to consider
-- Suggestions for testing or improvement`,
-  
-  ```
-            analysis: `Act as a data analyst and strategic consultant.
-  ```
-
-Analyze [DATA/SITUATION/TOPIC] to provide insights about [SPECIFIC QUESTION/GOAL].
-
-Context:
-
-- Background: [RELEVANT CONTEXT]
-- Stakeholders: [WHO WILL USE THIS ANALYSIS]
-- Decision to be made: [WHAT THIS ANALYSIS WILL INFORM]
-
-Please provide:
-
-- Key findings and trends
-- Actionable recommendations
-- Supporting evidence/reasoning
-- Potential risks or limitations
-
-Format as [executive summary/detailed report/presentation slides].`,
-
-```
-            creative: `Act as a creative consultant and brainstorming facilitator.
-```
-
-Generate creative ideas for [PROJECT/CHALLENGE] targeted at [AUDIENCE].
-
-Context:
-
-- Objective: [WHAT YOU’RE TRYING TO ACHIEVE]
-- Brand/style: [RELEVANT BRAND GUIDELINES OR PREFERENCES]
-- Constraints: [BUDGET/TIME/TECHNICAL LIMITATIONS]
-- Inspiration: [ANY REFERENCES OR EXAMPLES]
-
-Please provide:
-
-- 5-10 diverse creative concepts
-- Brief explanation for each idea
-- Pros and cons of top options
-- Next steps for development
-
-Focus on originality and practical feasibility.`,
-
-```
-            learning: `Act as a knowledgeable instructor and learning facilitator.
-```
-
-Explain [TOPIC/CONCEPT] to someone with [CURRENT KNOWLEDGE LEVEL] who wants to [LEARNING GOAL].
-
-Context:
-
-- Background: [RELEVANT EXPERIENCE OR CONTEXT]
-- Learning style: [VISUAL/AUDITORY/HANDS-ON/READING]
-- Timeline: [HOW QUICKLY THEY NEED TO LEARN]
-- Application: [HOW THEY’LL USE THIS KNOWLEDGE]
-
-Please provide:
-
-- Clear, step-by-step explanation
-- Real-world examples and analogies
-- Practice exercises or applications
-- Resources for further learning
-- Common mistakes to avoid
-
-Use simple language and build concepts progressively.`
-};
-
-```
-        const templateOutput = document.getElementById('templateOutput');
-        templateOutput.textContent = templates[type] || 'Template not found';
-        templateOutput.style.display = 'block';
-        
-        // Switch to builder tab and populate fields
-        switchTab('builder');
-        setTimeout(() => {
-            document.querySelector('.tab[onclick="switchTab(\'builder\')"]').click();
-        }, 100);
+        const template = AppState.templates[type];
+        if (template) {
+            const templateOutput = document.getElementById('templateOutput');
+            templateOutput.textContent = template;
+            templateOutput.style.display = 'block';
+        }
     }
 
-    // Prompt analysis functionality
+    // Analyze prompt
     function analyzePrompt() {
         const prompt = document.getElementById('analyzePrompt').value;
         
@@ -897,62 +934,43 @@ Use simple language and build concepts progressively.`
             'Your prompt looks good! No major improvements needed.';
 
         document.getElementById('optimizedPrompt').textContent = optimized;
-        document.getElementById('copyOptimizedBtn').style.display = 'block';
         document.getElementById('analysisResults').style.display = 'block';
     }
 
-    // Copy functions
-    function copyPrompt() {
-        const text = document.getElementById('promptOutput').textContent;
+    // Copy to clipboard function
+    function copyToClipboard(elementId, button) {
+        const text = document.getElementById(elementId).textContent;
+        
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(() => {
-                document.getElementById('copyBtn').textContent = 'Copied!';
-                setTimeout(() => {
-                    document.getElementById('copyBtn').textContent = 'Copy';
-                }, 2000);
+                showCopySuccess(button);
             }).catch(() => {
-                // Fallback for older browsers
-                fallbackCopyTextToClipboard(text);
+                fallbackCopyTextToClipboard(text, button);
             });
         } else {
-            fallbackCopyTextToClipboard(text);
+            fallbackCopyTextToClipboard(text, button);
         }
     }
 
-    function copyTemplate() {
-        const text = document.getElementById('templateOutput').textContent;
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Template copied to clipboard!');
-            });
-        } else {
-            fallbackCopyTextToClipboard(text);
-        }
-    }
-
-    function copyOptimized() {
-        const text = document.getElementById('optimizedPrompt').textContent;
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(() => {
-                document.getElementById('copyOptimizedBtn').textContent = 'Copied!';
-                setTimeout(() => {
-                    document.getElementById('copyOptimizedBtn').textContent = 'Copy';
-                }, 2000);
-            });
-        } else {
-            fallbackCopyTextToClipboard(text);
-        }
+    // Show copy success feedback
+    function showCopySuccess(button) {
+        const originalText = button.textContent;
+        button.textContent = 'Copied!';
+        button.style.background = '#10b981';
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.style.background = '#6366f1';
+        }, 2000);
     }
 
     // Fallback copy function for older browsers
-    function fallbackCopyTextToClipboard(text) {
+    function fallbackCopyTextToClipboard(text, button) {
         const textArea = document.createElement("textarea");
         textArea.value = text;
-        
-        // Avoid scrolling to bottom
         textArea.style.top = "0";
         textArea.style.left = "0";
         textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
 
         document.body.appendChild(textArea);
         textArea.focus();
@@ -961,27 +979,16 @@ Use simple language and build concepts progressively.`
         try {
             const successful = document.execCommand('copy');
             if (successful) {
-                alert('Copied to clipboard!');
+                showCopySuccess(button);
+            } else {
+                alert('Copy failed. Please select and copy manually.');
             }
         } catch (err) {
-            console.error('Fallback: Oops, unable to copy', err);
             alert('Copy failed. Please select and copy manually.');
         }
 
         document.body.removeChild(textArea);
     }
-
-    // Initialize the app
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add some initial guidance
-        const initialTip = document.createElement('div');
-        initialTip.className = 'tips';
-        initialTip.innerHTML = `
-            <h4>🎯 Quick Start Tips</h4>
-            <p>Select a task type above to get personalized guidance, or jump to Templates for ready-made prompts!</p>
-        `;
-        document.getElementById('builder').appendChild(initialTip);
-    });
 </script>
 ```
 
