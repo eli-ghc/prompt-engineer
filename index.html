@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Engineer</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Prompt Engineer">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiByeD0iNDAiIGZpbGw9IiM2MzY2RjEiLz4KPHN2ZyB4PSI0MCIgeT0iNDAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IndoaXRlIj4KPHA+PC9wPgo8L3N2Zz4KPC9zdmc+">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #333;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        min-height: 100vh;
+    }
+
+    .header {
+        text-align: center;
+        color: white;
+        margin-bottom: 30px;
+    }
+
+    .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .card {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        backdrop-filter: blur(10px);
+    }
+
+    .tabs {
+        display: flex;
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 5px;
+        margin-bottom: 20px;
+    }
+
+    .tab {
+        flex: 1;
+        padding: 12px;
+        text-align: center;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    .tab.active {
+        background: #6366f1;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .btn {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+    }
+
+    .btn-secondary {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .btn-secondary:hover {
+        background: #e5e7eb;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .prompt-output {
+        background: #f8f9fa;
+        border: 2px dashed #d1d5db;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+        min-height: 100px;
+        font-family: 'Monaco', 'Menlo', monospace;
+        white-space: pre-wrap;
+    }
+
+    .suggestions {
+        background: #eff6ff;
+        border-left: 4px solid #3b82f6;
+        padding: 15px;
+        margin-top: 15px;
+        border-radius: 0 10px 10px 0;
+    }
+
+    .suggestions h4 {
+        color: #1e40af;
+        margin-bottom: 10px;
+    }
+
+    .suggestions ul {
+        padding-left: 20px;
+    }
+
+    .suggestions li {
+        margin-bottom: 5px;
+        color: #1e40af;
+    }
+
+    .template-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .template-card {
+        background: #f8f9fa;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .template-card:hover {
+        border-color: #6366f1;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(99, 102, 241, 0.1);
+    }
+
+    .template-card h4 {
+        color: #6366f1;
+        margin-bottom: 8px;
+    }
+
+    .template-card p {
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+    .tips {
+        background: #fef3c7;
+        border-left: 4px solid #f59e0b;
+        padding: 15px;
+        margin-top: 15px;
+        border-radius: 0 10px 10px 0;
+    }
+
+    .tips h4 {
+        color: #92400e;
+        margin-bottom: 10px;
+    }
+
+    .copy-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #6366f1;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    .output-container {
+        position: relative;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 10px;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+        }
+        
+        .card {
+            padding: 20px;
+        }
+    }
+</style>
+```
+
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 AI Prompt Engineer</h1>
+            <p>Create exceptional AI prompts with guided assistance</p>
+        </div>
+
+```
+    <div class="card">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('builder')">Builder</div>
+            <div class="tab" onclick="switchTab('templates')">Templates</div>
+            <div class="tab" onclick="switchTab('analyzer')">Analyzer</div>
+            <div class="tab" onclick="switchTab('guide')">Guide</div>
+        </div>
+
+        <!-- Prompt Builder Tab -->
+        <div id="builder" class="tab-content active">
+            <h3>Build Your Perfect Prompt</h3>
+            
+            <div class="form-group">
+                <label>What type of task do you need help with?</label>
+                <select id="taskType" onchange="updateGuidance()">
+                    <option value="">Select a task type...</option>
+                    <option value="writing">Writing & Content Creation</option>
+                    <option value="analysis">Analysis & Research</option>
+                    <option value="coding">Programming & Code</option>
+                    <option value="creative">Creative & Brainstorming</option>
+                    <option value="problem-solving">Problem Solving</option>
+                    <option value="learning">Learning & Education</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Describe your specific goal or question:</label>
+                <textarea id="goal" placeholder="e.g., I need help writing a professional email to request a meeting with a potential client..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>What context should the AI know about?</label>
+                <textarea id="context" placeholder="e.g., I work at a marketing agency, the client is in healthcare, previous attempts at contact have failed..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>What format do you want the output in?</label>
+                <select id="format">
+                    <option value="">Any format</option>
+                    <option value="bullet-points">Bullet points</option>
+                    <option value="numbered-list">Numbered list</option>
+                    <option value="paragraph">Paragraph form</option>
+                    <option value="step-by-step">Step-by-step guide</option>
+                    <option value="table">Table format</option>
+                    <option value="code">Code snippet</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Any specific requirements or constraints?</label>
+                <input type="text" id="constraints" placeholder="e.g., Keep it under 200 words, professional tone, include specific keywords...">
+            </div>
+
+            <button class="btn" onclick="generatePrompt()">Generate Optimized Prompt</button>
+            
+            <div id="promptGuidance" class="suggestions" style="display: none;"></div>
+            
+            <div class="output-container">
+                <div id="promptOutput" class="prompt-output">Your optimized prompt will appear here...</div>
+                <button class="copy-btn" onclick="copyPrompt()" style="display: none;" id="copyBtn">Copy</button>
+            </div>
+
+            <div id="aiSuggestions" class="suggestions" style="display: none;"></div>
+        </div>
+
+        <!-- Templates Tab -->
+        <div id="templates" class="tab-content">
+            <h3>Quick Start Templates</h3>
+            <p>Click any template to customize it for your needs:</p>
+            
+            <div class="template-grid">
+                <div class="template-card" onclick="loadTemplate('writing')">
+                    <h4>✍️ Content Writing</h4>
+                    <p>Blog posts, articles, marketing copy</p>
+                </div>
+                <div class="template-card" onclick="loadTemplate('email')">
+                    <h4>📧 Email Assistant</h4>
+                    <p>Professional emails, responses, outreach</p>
+                </div>
+                <div class="template-card" onclick="loadTemplate('code')">
+                    <h4>💻 Code Helper</h4>
+                    <p>Programming, debugging, explanations</p>
+                </div>
+                <div class="template-card" onclick="loadTemplate('analysis')">
+                    <h4>📊 Data Analysis</h4>
+                    <p>Research, insights, summaries</p>
+                </div>
+                <div class="template-card" onclick="loadTemplate('creative')">
+                    <h4>🎨 Creative Projects</h4>
+                    <p>Brainstorming, storytelling, ideas</p>
+                </div>
+                <div class="template-card" onclick="loadTemplate('learning')">
+                    <h4>📚 Learning Coach</h4>
+                    <p>Explanations, tutorials, study guides</p>
+                </div>
+            </div>
+
+            <div id="templateOutput" class="prompt-output" style="display: none;">
+                <button class="copy-btn" onclick="copyTemplate()">Copy</button>
+            </div>
+        </div>
+
+        <!-- Analyzer Tab -->
+        <div id="analyzer" class="tab-content">
+            <h3>Prompt Analyzer & Optimizer</h3>
+            <p>Paste your existing prompt to get improvement suggestions:</p>
+            
+            <div class="form-group">
+                <label>Your current prompt:</label>
+                <textarea id="analyzePrompt" placeholder="Paste your prompt here for analysis..."></textarea>
+            </div>
+
+            <button class="btn" onclick="analyzePrompt()">Analyze & Improve</button>
+            
+            <div id="analysisResults" style="display: none;">
+                <div class="suggestions">
+                    <h4>📈 Analysis Results</h4>
+                    <div id="analysisScore"></div>
+                    <div id="analysisIssues"></div>
+                </div>
+                
+                <div class="tips">
+                    <h4>💡 Improvement Suggestions</h4>
+                    <div id="improvements"></div>
+                </div>
+                
+                <div class="output-container">
+                    <h4>Optimized Version:</h4>
+                    <div id="optimizedPrompt" class="prompt-output"></div>
+                    <button class="copy-btn" onclick="copyOptimized()" id="copyOptimizedBtn">Copy</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Guide Tab -->
+        <div id="guide" class="tab-content">
+            <h3>Prompt Engineering Masterclass</h3>
+            
+            <div class="tips">
+                <h4>🎯 The CLEAR Framework</h4>
+                <ul>
+                    <li><strong>Context:</strong> Provide relevant background information</li>
+                    <li><strong>Length:</strong> Specify desired output length</li>
+                    <li><strong>Examples:</strong> Include examples when helpful</li>
+                    <li><strong>Audience:</strong> Define who the output is for</li>
+                    <li><strong>Role:</strong> Tell the AI what role to play</li>
+                </ul>
+            </div>
+
+            <div class="suggestions">
+                <h4>🚀 Advanced Techniques</h4>
+                <ul>
+                    <li><strong>Chain of Thought:</strong> Ask AI to "think step by step"</li>
+                    <li><strong>Few-Shot Learning:</strong> Provide 2-3 examples</li>
+                    <li><strong>Role Playing:</strong> "Act as a professional writer..."</li>
+                    <li><strong>Output Formatting:</strong> Specify structure and format</li>
+                    <li><strong>Constraints:</strong> Set clear boundaries and requirements</li>
+                </ul>
+            </div>
+
+            <div class="tips">
+                <h4>❌ Common Mistakes to Avoid</h4>
+                <ul>
+                    <li>Being too vague or ambiguous</li>
+                    <li>Not providing enough context</li>
+                    <li>Asking multiple unrelated questions</li>
+                    <li>Forgetting to specify output format</li>
+                    <li>Not testing and iterating</li>
+                </ul>
+            </div>
+
+            <div class="suggestions">
+                <h4>📝 Template Structure</h4>
+                <p><strong>Great prompts typically follow this structure:</strong></p>
+                <ul>
+                    <li>Role/Context Setting</li>
+                    <li>Specific Task Description</li>
+                    <li>Relevant Background Information</li>
+                    <li>Desired Output Format</li>
+                    <li>Any Constraints or Requirements</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab switching functionality
+    function switchTab(tabName) {
+        // Hide all tab contents
+        const contents = document.querySelectorAll('.tab-content');
+        contents.forEach(content => content.classList.remove('active'));
+        
+        // Remove active class from all tabs
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => tab.classList.remove('active'));
+        
+        // Show selected tab content and mark tab as active
+        document.getElementById(tabName).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    // Dynamic guidance based on task type
+    function updateGuidance() {
+        const taskType = document.getElementById('taskType').value;
+        const guidanceDiv = document.getElementById('promptGuidance');
+        
+        const guidance = {
+            writing: {
+                title: "✍️ Writing & Content Tips",
+                tips: [
+                    "Specify the target audience and tone",
+                    "Mention desired word count or length",
+                    "Include the purpose (inform, persuade, entertain)",
+                    "Provide context about the topic and angle"
+                ]
+            },
+            analysis: {
+                title: "📊 Analysis & Research Tips",
+                tips: [
+                    "Define what specific insights you need",
+                    "Specify the data sources or information available",
+                    "Mention the decision this analysis will inform",
+                    "Ask for specific format (summary, detailed report, etc.)"
+                ]
+            },
+            coding: {
+                title: "💻 Programming Tips",
+                tips: [
+                    "Specify the programming language",
+                    "Describe the expected input and output",
+                    "Mention any constraints or requirements",
+                    "Ask for comments and explanations if needed"
+                ]
+            },
+            creative: {
+                title: "🎨 Creative Tips",
+                tips: [
+                    "Set the creative constraints or theme",
+                    "Specify the target audience or use case",
+                    "Mention the desired tone or style",
+                    "Ask for multiple options or variations"
+                ]
+            },
+            "problem-solving": {
+                title: "🧩 Problem Solving Tips",
+                tips: [
+                    "Clearly define the problem and constraints",
+                    "Provide relevant background context",
+                    "Specify what type of solution you need",
+                    "Ask for step-by-step reasoning"
+                ]
+            },
+            learning: {
+                title: "📚 Learning Tips",
+                tips: [
+                    "Specify your current knowledge level",
+                    "Mention your learning goals",
+                    "Ask for examples and practical applications",
+                    "Request explanations in simple terms"
+                ]
+            }
+        };
+
+        if (taskType && guidance[taskType]) {
+            const g = guidance[taskType];
+            guidanceDiv.innerHTML = `
+                <h4>${g.title}</h4>
+                <ul>
+                    ${g.tips.map(tip => `<li>${tip}</li>`).join('')}
+                </ul>
+            `;
+            guidanceDiv.style.display = 'block';
+        } else {
+            guidanceDiv.style.display = 'none';
+        }
+    }
+
+    // Generate optimized prompt
+    function generatePrompt() {
+        const taskType = document.getElementById('taskType').value;
+        const goal = document.getElementById('goal').value;
+        const context = document.getElementById('context').value;
+        const format = document.getElementById('format').value;
+        const constraints = document.getElementById('constraints').value;
+
+        if (!goal.trim()) {
+            alert('Please describe your specific goal or question.');
+            return;
+        }
+
+        let prompt = '';
+        
+        // Add role setting based on task type
+        const roles = {
+            writing: "Act as a professional content writer and editor.",
+            analysis: "Act as a data analyst and researcher.",
+            coding: "Act as an experienced software developer and coding mentor.",
+            creative: "Act as a creative consultant and brainstorming partner.",
+            "problem-solving": "Act as a strategic problem-solving consultant.",
+            learning: "Act as a knowledgeable teacher and learning facilitator."
+        };
+
+        if (taskType && roles[taskType]) {
+            prompt += roles[taskType] + ' ';
+        }
+
+        // Add main goal
+        prompt += goal;
+
+        // Add context if provided
+        if (context.trim()) {
+            prompt += `\n\nContext: ${context}`;
+        }
+
+        // Add format requirements
+        if (format) {
+            const formatInstructions = {
+                'bullet-points': 'Please format your response as clear bullet points.',
+                'numbered-list': 'Please format your response as a numbered list.',
+                'paragraph': 'Please provide your response in well-structured paragraphs.',
+                'step-by-step': 'Please provide a step-by-step guide.',
+                'table': 'Please format your response in a table format.',
+                'code': 'Please provide your response as a code snippet with comments.'
+            };
+            if (formatInstructions[format]) {
+                prompt += `\n\n${formatInstructions[format]}`;
+            }
+        }
+
+        // Add constraints
+        if (constraints.trim()) {
+            prompt += `\n\nRequirements: ${constraints}`;
+        }
+
+        // Display the generated prompt
+        document.getElementById('promptOutput').textContent = prompt;
+        document.getElementById('copyBtn').style.display = 'block';
+
+        // Generate AI suggestions
+        generateSuggestions(prompt, taskType);
+    }
+
+    // Generate improvement suggestions
+    function generateSuggestions(prompt, taskType) {
+        const suggestionsDiv = document.getElementById('aiSuggestions');
+        
+        const suggestions = [
+            "Consider adding specific examples to illustrate your request",
+            "You might want to specify the target audience more clearly",
+            "Adding a word count or length requirement could help",
+            "Consider mentioning the tone or style you prefer",
+            "Think about providing more context about your use case"
+        ];
+
+        // Simple analysis - check for common improvements
+        const improvements = [];
+        
+        if (prompt.length < 100) {
+            improvements.push("Your prompt could benefit from more detail and context");
+        }
+        
+        if (!prompt.includes('example') && !prompt.includes('format')) {
+            improvements.push("Consider adding examples or specifying the desired format");
+        }
+        
+        if (!prompt.toLowerCase().includes('tone') && !prompt.toLowerCase().includes('style')) {
+            improvements.push("Specifying the tone or style could improve results");
+        }
+
+        if (improvements.length > 0) {
+            suggestionsDiv.innerHTML = `
+                <h4>🎯 AI-Powered Suggestions</h4>
+                <ul>
+                    ${improvements.map(imp => `<li>${imp}</li>`).join('')}
+                </ul>
+            `;
+            suggestionsDiv.style.display = 'block';
+        }
+    }
+
+    // Template loading
+    function loadTemplate(type) {
+        const templates = {
+            writing: `Act as a professional content writer with expertise in [TOPIC/INDUSTRY].
+```
+
+Write a [TYPE OF CONTENT] about [SPECIFIC TOPIC] for [TARGET AUDIENCE].
+
+Context:
+
+- Purpose: [inform/persuade/entertain]
+- Tone: [professional/casual/friendly/authoritative]
+- Key points to cover: [LIST KEY POINTS]
+
+Requirements:
+
+- Length: [WORD COUNT]
+- Include relevant examples
+- Use engaging headlines/subheadings
+- Optimize for readability
+
+Please structure the content with clear sections and provide actionable insights.`,
+
+```
+            email: `Act as a professional communication specialist.
+```
+
+Compose a [TYPE OF EMAIL] to [RECIPIENT] regarding [SUBJECT/PURPOSE].
+
+Context:
+
+- Relationship: [professional/personal/first contact]
+- Previous interaction: [BACKGROUND]
+- Desired outcome: [WHAT YOU WANT TO ACHIEVE]
+
+Requirements:
+
+- Tone: [professional/friendly/formal]
+- Length: [brief/detailed]
+- Include clear call-to-action
+- Maintain professional etiquette
+
+Please structure with appropriate greeting, body, and closing.`,
+
+```
+            code: `Act as an experienced [PROGRAMMING LANGUAGE] developer.
+```
+
+Help me [SPECIFIC CODING TASK] for [PROJECT CONTEXT].
+
+Requirements:
+
+- Input: [DESCRIBE INPUT DATA/PARAMETERS]
+- Expected output: [DESCRIBE DESIRED OUTPUT]
+- Constraints: [PERFORMANCE/STYLE/FRAMEWORK REQUIREMENTS]
+- Environment: [RELEVANT TECHNICAL DETAILS]
+
+Please provide:
+
+- Clean, well-commented code
+- Explanation of the approach
+- Any potential edge cases to consider
+- Suggestions for testing or improvement`,
+  
+  ```
+            analysis: `Act as a data analyst and strategic consultant.
+  ```
+
+Analyze [DATA/SITUATION/TOPIC] to provide insights about [SPECIFIC QUESTION/GOAL].
+
+Context:
+
+- Background: [RELEVANT CONTEXT]
+- Stakeholders: [WHO WILL USE THIS ANALYSIS]
+- Decision to be made: [WHAT THIS ANALYSIS WILL INFORM]
+
+Please provide:
+
+- Key findings and trends
+- Actionable recommendations
+- Supporting evidence/reasoning
+- Potential risks or limitations
+
+Format as [executive summary/detailed report/presentation slides].`,
+
+```
+            creative: `Act as a creative consultant and brainstorming facilitator.
+```
+
+Generate creative ideas for [PROJECT/CHALLENGE] targeted at [AUDIENCE].
+
+Context:
+
+- Objective: [WHAT YOU’RE TRYING TO ACHIEVE]
+- Brand/style: [RELEVANT BRAND GUIDELINES OR PREFERENCES]
+- Constraints: [BUDGET/TIME/TECHNICAL LIMITATIONS]
+- Inspiration: [ANY REFERENCES OR EXAMPLES]
+
+Please provide:
+
+- 5-10 diverse creative concepts
+- Brief explanation for each idea
+- Pros and cons of top options
+- Next steps for development
+
+Focus on originality and practical feasibility.`,
+
+```
+            learning: `Act as a knowledgeable instructor and learning facilitator.
+```
+
+Explain [TOPIC/CONCEPT] to someone with [CURRENT KNOWLEDGE LEVEL] who wants to [LEARNING GOAL].
+
+Context:
+
+- Background: [RELEVANT EXPERIENCE OR CONTEXT]
+- Learning style: [VISUAL/AUDITORY/HANDS-ON/READING]
+- Timeline: [HOW QUICKLY THEY NEED TO LEARN]
+- Application: [HOW THEY’LL USE THIS KNOWLEDGE]
+
+Please provide:
+
+- Clear, step-by-step explanation
+- Real-world examples and analogies
+- Practice exercises or applications
+- Resources for further learning
+- Common mistakes to avoid
+
+Use simple language and build concepts progressively.`
+};
+
+```
+        const templateOutput = document.getElementById('templateOutput');
+        templateOutput.textContent = templates[type] || 'Template not found';
+        templateOutput.style.display = 'block';
+        
+        // Switch to builder tab and populate fields
+        switchTab('builder');
+        setTimeout(() => {
+            document.querySelector('.tab[onclick="switchTab(\'builder\')"]').click();
+        }, 100);
+    }
+
+    // Prompt analysis functionality
+    function analyzePrompt() {
+        const prompt = document.getElementById('analyzePrompt').value;
+        
+        if (!prompt.trim()) {
+            alert('Please enter a prompt to analyze.');
+            return;
+        }
+
+        // Simple analysis scoring
+        let score = 0;
+        const issues = [];
+        const improvements = [];
+
+        // Check length
+        if (prompt.length < 50) {
+            issues.push('Prompt is quite short - may lack sufficient detail');
+        } else if (prompt.length > 500) {
+            score += 10;
+        } else {
+            score += 15;
+        }
+
+        // Check for context
+        if (prompt.toLowerCase().includes('context') || prompt.toLowerCase().includes('background')) {
+            score += 15;
+        } else {
+            issues.push('No explicit context provided');
+            improvements.push('Add background context or relevant information');
+        }
+
+        // Check for specificity
+        const specificWords = ['specific', 'exactly', 'precisely', 'detailed', 'particular'];
+        if (specificWords.some(word => prompt.toLowerCase().includes(word))) {
+            score += 10;
+        } else {
+            improvements.push('Be more specific about what you want');
+        }
+
+        // Check for format instruction
+        const formatWords = ['format', 'structure', 'organize', 'bullet', 'list', 'paragraph'];
+        if (formatWords.some(word => prompt.toLowerCase().includes(word))) {
+            score += 15;
+        } else {
+            improvements.push('Specify the desired output format');
+        }
+
+        // Check for role assignment
+        if (prompt.toLowerCase().includes('act as') || prompt.toLowerCase().includes('you are')) {
+            score += 15;
+        } else {
+            improvements.push('Consider assigning a specific role to the AI');
+        }
+
+        // Check for examples
+        if (prompt.toLowerCase().includes('example') || prompt.toLowerCase().includes('for instance')) {
+            score += 10;
+        } else {
+            improvements.push('Consider providing examples to clarify your request');
+        }
+
+        // Generate optimized version
+        let optimized = prompt;
+        
+        if (!prompt.toLowerCase().includes('act as')) {
+            optimized = 'Act as an expert assistant. ' + optimized;
+        }
+        
+        if (!formatWords.some(word => prompt.toLowerCase().includes(word))) {
+            optimized += '\n\nPlease structure your response clearly and provide detailed explanations.';
+        }
+
+        // Display results
+        document.getElementById('analysisScore').innerHTML = `
+            <strong>Prompt Quality Score: ${score}/85</strong>
+            <div style="background: linear-gradient(90deg, #10b981 0%, #10b981 ${(score/85)*100}%, #e5e7eb ${(score/85)*100}%, #e5e7eb 100%); height: 10px; border-radius: 5px; margin: 10px 0;"></div>
+        `;
+
+        document.getElementById('analysisIssues').innerHTML = issues.length > 0 ? 
+            '<strong>Issues Found:</strong><ul>' + issues.map(issue => `<li>${issue}</li>`).join('') + '</ul>' : 
+            '<strong>✅ No major issues found!</strong>';
+
+        document.getElementById('improvements').innerHTML = improvements.length > 0 ?
+            '<ul>' + improvements.map(imp => `<li>${imp}</li>`).join('') + '</ul>' :
+            'Your prompt looks good! No major improvements needed.';
+
+        document.getElementById('optimizedPrompt').textContent = optimized;
+        document.getElementById('copyOptimizedBtn').style.display = 'block';
+        document.getElementById('analysisResults').style.display = 'block';
+    }
+
+    // Copy functions
+    function copyPrompt() {
+        const text = document.getElementById('promptOutput').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            document.getElementById('copyBtn').textContent = 'Copied!';
+            setTimeout(() => {
+                document.getElementById('copyBtn').textContent = 'Copy';
+            }, 2000);
+        });
+    }
+
+    function copyTemplate() {
+        const text = document.getElementById('templateOutput').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Template copied to clipboard!');
+        });
+    }
+
+    function copyOptimized() {
+        const text = document.getElementById('optimizedPrompt').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            document.getElementById('copyOptimizedBtn').textContent = 'Copied!';
+            setTimeout(() => {
+                document.getElementById('copyOptimizedBtn').textContent = 'Copy';
+            }, 2000);
+        });
+    }
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add some initial guidance
+        const initialTip = document.createElement('div');
+        initialTip.className = 'tips';
+        initialTip.innerHTML = `
+            <h4>🎯 Quick Start Tips</h4>
+            <p>Select a task type above to get personalized guidance, or jump to Templates for ready-made prompts!</p>
+        `;
+        document.getElementById('builder').appendChild(initialTip);
+    });
+</script>
+```
+
+</body>
+</html>
