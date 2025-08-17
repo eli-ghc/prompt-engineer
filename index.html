@@ -73,6 +73,8 @@
         cursor: pointer;
         transition: all 0.3s ease;
         font-weight: 600;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
     }
 
     .tab.active {
@@ -476,7 +478,14 @@
         
         // Show selected tab content and mark tab as active
         document.getElementById(tabName).classList.add('active');
-        event.target.classList.add('active');
+        
+        // Find and activate the clicked tab
+        const clickedTab = Array.from(document.querySelectorAll('.tab')).find(tab => 
+            tab.getAttribute('onclick') && tab.getAttribute('onclick').includes(tabName)
+        );
+        if (clickedTab) {
+            clickedTab.classList.add('active');
+        }
     }
 
     // Dynamic guidance based on task type
@@ -895,29 +904,71 @@ Use simple language and build concepts progressively.`
     // Copy functions
     function copyPrompt() {
         const text = document.getElementById('promptOutput').textContent;
-        navigator.clipboard.writeText(text).then(() => {
-            document.getElementById('copyBtn').textContent = 'Copied!';
-            setTimeout(() => {
-                document.getElementById('copyBtn').textContent = 'Copy';
-            }, 2000);
-        });
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                document.getElementById('copyBtn').textContent = 'Copied!';
+                setTimeout(() => {
+                    document.getElementById('copyBtn').textContent = 'Copy';
+                }, 2000);
+            }).catch(() => {
+                // Fallback for older browsers
+                fallbackCopyTextToClipboard(text);
+            });
+        } else {
+            fallbackCopyTextToClipboard(text);
+        }
     }
 
     function copyTemplate() {
         const text = document.getElementById('templateOutput').textContent;
-        navigator.clipboard.writeText(text).then(() => {
-            alert('Template copied to clipboard!');
-        });
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Template copied to clipboard!');
+            });
+        } else {
+            fallbackCopyTextToClipboard(text);
+        }
     }
 
     function copyOptimized() {
         const text = document.getElementById('optimizedPrompt').textContent;
-        navigator.clipboard.writeText(text).then(() => {
-            document.getElementById('copyOptimizedBtn').textContent = 'Copied!';
-            setTimeout(() => {
-                document.getElementById('copyOptimizedBtn').textContent = 'Copy';
-            }, 2000);
-        });
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                document.getElementById('copyOptimizedBtn').textContent = 'Copied!';
+                setTimeout(() => {
+                    document.getElementById('copyOptimizedBtn').textContent = 'Copy';
+                }, 2000);
+            });
+        } else {
+            fallbackCopyTextToClipboard(text);
+        }
+    }
+
+    // Fallback copy function for older browsers
+    function fallbackCopyTextToClipboard(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        
+        // Avoid scrolling to bottom
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
+
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                alert('Copied to clipboard!');
+            }
+        } catch (err) {
+            console.error('Fallback: Oops, unable to copy', err);
+            alert('Copy failed. Please select and copy manually.');
+        }
+
+        document.body.removeChild(textArea);
     }
 
     // Initialize the app
