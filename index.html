@@ -8,7 +8,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Prompt Engineer">
-    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiByeD0iNDAiIGZpbGw9IiM2MzY2RjEiLz4KPHN2ZyB4PSI0MCIgeT0iNDAiIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9IndoaXRlIj4KPHA+PC9wPgo8L3N2Zz4KPC9zdmc+">
     <style>
         * {
             margin: 0;
@@ -22,6 +21,7 @@
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
         color: #333;
+        line-height: 1.6;
     }
 
     .container {
@@ -54,44 +54,44 @@
         padding: 25px;
         margin-bottom: 20px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        backdrop-filter: blur(10px);
     }
 
     .tabs {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+
+    .tab-btn {
+        padding: 15px;
         background: #f8f9fa;
-        border-radius: 15px;
-        padding: 5px;
-        margin-bottom: 20px;
-    }
-
-    .tab {
-        flex: 1;
-        padding: 12px;
-        text-align: center;
+        border: 2px solid #e5e7eb;
         border-radius: 10px;
-        transition: all 0.3s ease;
         font-weight: 600;
-        -webkit-tap-highlight-color: transparent;
-        user-select: none;
-        background: transparent;
-        border: none;
-        font-size: 14px;
+        text-decoration: none;
         color: #6b7280;
+        text-align: center;
+        display: block;
+        transition: all 0.3s ease;
     }
 
-    .tab.active {
+    .tab-btn:hover, .tab-btn:focus {
         background: #6366f1;
         color: white;
+        border-color: #6366f1;
         transform: translateY(-2px);
     }
 
-    .tab-content {
-        display: none;
+    .section {
+        margin-bottom: 40px;
     }
 
-    .tab-content.active {
-        display: block;
+    .section h2 {
+        color: #6366f1;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e5e7eb;
     }
 
     .form-group {
@@ -137,22 +137,17 @@
         border-radius: 10px;
         font-size: 16px;
         font-weight: 600;
+        cursor: pointer;
         transition: all 0.3s ease;
         width: 100%;
         margin-top: 10px;
-        -webkit-tap-highlight-color: transparent;
     }
 
     .btn:active {
         transform: scale(0.98);
     }
 
-    .btn-secondary {
-        background: #f3f4f6;
-        color: #374151;
-    }
-
-    .prompt-output {
+    .output-box {
         background: #f8f9fa;
         border: 2px dashed #d1d5db;
         border-radius: 10px;
@@ -164,26 +159,43 @@
         position: relative;
     }
 
+    .copy-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #6366f1;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    .tips {
+        background: #fef3c7;
+        border-left: 4px solid #f59e0b;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 0 10px 10px 0;
+    }
+
+    .tips h4 {
+        color: #92400e;
+        margin-bottom: 10px;
+    }
+
     .suggestions {
         background: #eff6ff;
         border-left: 4px solid #3b82f6;
         padding: 15px;
-        margin-top: 15px;
+        margin: 15px 0;
         border-radius: 0 10px 10px 0;
     }
 
     .suggestions h4 {
         color: #1e40af;
         margin-bottom: 10px;
-    }
-
-    .suggestions ul {
-        padding-left: 20px;
-    }
-
-    .suggestions li {
-        margin-bottom: 5px;
-        color: #1e40af;
     }
 
     .template-grid {
@@ -198,8 +210,8 @@
         border: 2px solid #e5e7eb;
         border-radius: 10px;
         padding: 15px;
+        cursor: pointer;
         transition: all 0.3s ease;
-        -webkit-tap-highlight-color: transparent;
     }
 
     .template-card:active {
@@ -215,36 +227,6 @@
     .template-card p {
         color: #6b7280;
         font-size: 14px;
-    }
-
-    .tips {
-        background: #fef3c7;
-        border-left: 4px solid #f59e0b;
-        padding: 15px;
-        margin-top: 15px;
-        border-radius: 0 10px 10px 0;
-    }
-
-    .tips h4 {
-        color: #92400e;
-        margin-bottom: 10px;
-    }
-
-    .copy-btn {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: #6366f1;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 12px;
-        -webkit-tap-highlight-color: transparent;
-    }
-
-    .output-container {
-        position: relative;
     }
 
     @media (max-width: 768px) {
@@ -263,6 +245,14 @@
         .template-grid {
             grid-template-columns: 1fr;
         }
+
+        .tabs {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .hidden {
+        display: none;
     }
 </style>
 ```
@@ -278,19 +268,19 @@
 ```
     <div class="card">
         <div class="tabs">
-            <button class="tab active" data-tab="builder">Builder</button>
-            <button class="tab" data-tab="templates">Templates</button>
-            <button class="tab" data-tab="analyzer">Analyzer</button>
-            <button class="tab" data-tab="guide">Guide</button>
+            <a href="#builder" class="tab-btn" onclick="showSection('builder')">🔧 Prompt Builder</a>
+            <a href="#templates" class="tab-btn" onclick="showSection('templates')">📝 Templates</a>
+            <a href="#analyzer" class="tab-btn" onclick="showSection('analyzer')">📊 Analyzer</a>
+            <a href="#guide" class="tab-btn" onclick="showSection('guide')">📚 Guide</a>
         </div>
 
-        <!-- Prompt Builder Tab -->
-        <div id="builder" class="tab-content active">
-            <h3>Build Your Perfect Prompt</h3>
+        <!-- Prompt Builder Section -->
+        <div id="builder" class="section">
+            <h2>Build Your Perfect Prompt</h2>
             
             <div class="form-group">
                 <label>What type of task do you need help with?</label>
-                <select id="taskType">
+                <select id="taskType" onchange="updateGuidance()">
                     <option value="">Select a task type...</option>
                     <option value="writing">Writing & Content Creation</option>
                     <option value="analysis">Analysis & Research</option>
@@ -329,58 +319,55 @@
                 <input type="text" id="constraints" placeholder="e.g., Keep it under 200 words, professional tone, include specific keywords...">
             </div>
 
-            <button class="btn" id="generateBtn">Generate Optimized Prompt</button>
+            <button class="btn" onclick="generatePrompt()">Generate Optimized Prompt</button>
             
-            <div id="promptGuidance" class="suggestions" style="display: none;"></div>
+            <div id="promptGuidance" class="suggestions hidden"></div>
             
-            <div class="output-container">
-                <div id="promptOutput" class="prompt-output">Your optimized prompt will appear here...</div>
-                <button class="copy-btn" id="copyBtn" style="display: none;">Copy</button>
-            </div>
+            <div class="output-box" id="promptOutput">Your optimized prompt will appear here...</div>
 
-            <div id="aiSuggestions" class="suggestions" style="display: none;"></div>
+            <div id="aiSuggestions" class="suggestions hidden"></div>
         </div>
 
-        <!-- Templates Tab -->
-        <div id="templates" class="tab-content">
-            <h3>Quick Start Templates</h3>
-            <p>Tap any template to customize it for your needs:</p>
+        <!-- Templates Section -->
+        <div id="templates" class="section hidden">
+            <h2>Quick Start Templates</h2>
+            <p>Tap any template to view and copy it:</p>
             
             <div class="template-grid">
-                <div class="template-card" data-template="writing">
+                <div class="template-card" onclick="loadTemplate('writing')">
                     <h4>✍️ Content Writing</h4>
                     <p>Blog posts, articles, marketing copy</p>
                 </div>
-                <div class="template-card" data-template="email">
+                <div class="template-card" onclick="loadTemplate('email')">
                     <h4>📧 Email Assistant</h4>
                     <p>Professional emails, responses, outreach</p>
                 </div>
-                <div class="template-card" data-template="code">
+                <div class="template-card" onclick="loadTemplate('code')">
                     <h4>💻 Code Helper</h4>
                     <p>Programming, debugging, explanations</p>
                 </div>
-                <div class="template-card" data-template="analysis">
+                <div class="template-card" onclick="loadTemplate('analysis')">
                     <h4>📊 Data Analysis</h4>
                     <p>Research, insights, summaries</p>
                 </div>
-                <div class="template-card" data-template="creative">
+                <div class="template-card" onclick="loadTemplate('creative')">
                     <h4>🎨 Creative Projects</h4>
                     <p>Brainstorming, storytelling, ideas</p>
                 </div>
-                <div class="template-card" data-template="learning">
+                <div class="template-card" onclick="loadTemplate('learning')">
                     <h4>📚 Learning Coach</h4>
                     <p>Explanations, tutorials, study guides</p>
                 </div>
             </div>
 
-            <div id="templateOutput" class="prompt-output" style="display: none;">
-                <button class="copy-btn" id="copyTemplateBtn">Copy</button>
+            <div class="output-box hidden" id="templateOutput">
+                <button class="copy-btn" onclick="copyText('templateOutput')">Copy</button>
             </div>
         </div>
 
-        <!-- Analyzer Tab -->
-        <div id="analyzer" class="tab-content">
-            <h3>Prompt Analyzer & Optimizer</h3>
+        <!-- Analyzer Section -->
+        <div id="analyzer" class="section hidden">
+            <h2>Prompt Analyzer & Optimizer</h2>
             <p>Paste your existing prompt to get improvement suggestions:</p>
             
             <div class="form-group">
@@ -388,9 +375,9 @@
                 <textarea id="analyzePrompt" placeholder="Paste your prompt here for analysis..."></textarea>
             </div>
 
-            <button class="btn" id="analyzeBtn">Analyze & Improve</button>
+            <button class="btn" onclick="analyzePrompt()">Analyze & Improve</button>
             
-            <div id="analysisResults" style="display: none;">
+            <div id="analysisResults" class="hidden">
                 <div class="suggestions">
                     <h4>📈 Analysis Results</h4>
                     <div id="analysisScore"></div>
@@ -402,17 +389,15 @@
                     <div id="improvements"></div>
                 </div>
                 
-                <div class="output-container">
-                    <h4>Optimized Version:</h4>
-                    <div id="optimizedPrompt" class="prompt-output"></div>
-                    <button class="copy-btn" id="copyOptimizedBtn">Copy</button>
+                <div class="output-box" id="optimizedPrompt">
+                    <button class="copy-btn" onclick="copyText('optimizedPrompt')">Copy</button>
                 </div>
             </div>
         </div>
 
-        <!-- Guide Tab -->
-        <div id="guide" class="tab-content">
-            <h3>Prompt Engineering Masterclass</h3>
+        <!-- Guide Section -->
+        <div id="guide" class="section hidden">
+            <h2>Prompt Engineering Masterclass</h2>
             
             <div class="tips">
                 <h4>🎯 The CLEAR Framework</h4>
@@ -463,218 +448,32 @@
 </div>
 
 <script>
-    // Global app state
-    const AppState = {
-        currentTab: 'builder',
-        templates: {
-            writing: `Act as a professional content writer with expertise in [TOPIC/INDUSTRY].
-```
-
-Write a [TYPE OF CONTENT] about [SPECIFIC TOPIC] for [TARGET AUDIENCE].
-
-Context:
-
-- Purpose: [inform/persuade/entertain]
-- Tone: [professional/casual/friendly/authoritative]
-- Key points to cover: [LIST KEY POINTS]
-
-Requirements:
-
-- Length: [WORD COUNT]
-- Include relevant examples
-- Use engaging headlines/subheadings
-- Optimize for readability
-
-Please structure the content with clear sections and provide actionable insights.`,
-
-```
-            email: `Act as a professional communication specialist.
-```
-
-Compose a [TYPE OF EMAIL] to [RECIPIENT] regarding [SUBJECT/PURPOSE].
-
-Context:
-
-- Relationship: [professional/personal/first contact]
-- Previous interaction: [BACKGROUND]
-- Desired outcome: [WHAT YOU WANT TO ACHIEVE]
-
-Requirements:
-
-- Tone: [professional/friendly/formal]
-- Length: [brief/detailed]
-- Include clear call-to-action
-- Maintain professional etiquette
-
-Please structure with appropriate greeting, body, and closing.`,
-
-```
-            code: `Act as an experienced [PROGRAMMING LANGUAGE] developer.
-```
-
-Help me [SPECIFIC CODING TASK] for [PROJECT CONTEXT].
-
-Requirements:
-
-- Input: [DESCRIBE INPUT DATA/PARAMETERS]
-- Expected output: [DESCRIBE DESIRED OUTPUT]
-- Constraints: [PERFORMANCE/STYLE/FRAMEWORK REQUIREMENTS]
-- Environment: [RELEVANT TECHNICAL DETAILS]
-
-Please provide:
-
-- Clean, well-commented code
-- Explanation of the approach
-- Any potential edge cases to consider
-- Suggestions for testing or improvement`,
-  
-  ```
-            analysis: `Act as a data analyst and strategic consultant.
-  ```
-
-Analyze [DATA/SITUATION/TOPIC] to provide insights about [SPECIFIC QUESTION/GOAL].
-
-Context:
-
-- Background: [RELEVANT CONTEXT]
-- Stakeholders: [WHO WILL USE THIS ANALYSIS]
-- Decision to be made: [WHAT THIS ANALYSIS WILL INFORM]
-
-Please provide:
-
-- Key findings and trends
-- Actionable recommendations
-- Supporting evidence/reasoning
-- Potential risks or limitations
-
-Format as [executive summary/detailed report/presentation slides].`,
-
-```
-            creative: `Act as a creative consultant and brainstorming facilitator.
-```
-
-Generate creative ideas for [PROJECT/CHALLENGE] targeted at [AUDIENCE].
-
-Context:
-
-- Objective: [WHAT YOU’RE TRYING TO ACHIEVE]
-- Brand/style: [RELEVANT BRAND GUIDELINES OR PREFERENCES]
-- Constraints: [BUDGET/TIME/TECHNICAL LIMITATIONS]
-- Inspiration: [ANY REFERENCES OR EXAMPLES]
-
-Please provide:
-
-- 5-10 diverse creative concepts
-- Brief explanation for each idea
-- Pros and cons of top options
-- Next steps for development
-
-Focus on originality and practical feasibility.`,
-
-```
-            learning: `Act as a knowledgeable instructor and learning facilitator.
-```
-
-Explain [TOPIC/CONCEPT] to someone with [CURRENT KNOWLEDGE LEVEL] who wants to [LEARNING GOAL].
-
-Context:
-
-- Background: [RELEVANT EXPERIENCE OR CONTEXT]
-- Learning style: [VISUAL/AUDITORY/HANDS-ON/READING]
-- Timeline: [HOW QUICKLY THEY NEED TO LEARN]
-- Application: [HOW THEY’LL USE THIS KNOWLEDGE]
-
-Please provide:
-
-- Clear, step-by-step explanation
-- Real-world examples and analogies
-- Practice exercises or applications
-- Resources for further learning
-- Common mistakes to avoid
-
-Use simple language and build concepts progressively.`
-}
-};
-
-```
-    // Initialize app when DOM is loaded
-    document.addEventListener('DOMContentLoaded', function() {
-        initializeApp();
-    });
-
-    function initializeApp() {
-        // Set up tab listeners
-        const tabs = document.querySelectorAll('.tab');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', function() {
-                const tabName = this.getAttribute('data-tab');
-                switchTab(tabName);
-            });
-        });
-
-        // Set up button listeners
-        document.getElementById('generateBtn').addEventListener('click', generatePrompt);
-        document.getElementById('analyzeBtn').addEventListener('click', analyzePrompt);
-        document.getElementById('copyBtn').addEventListener('click', function() {
-            copyToClipboard('promptOutput', this);
-        });
-        document.getElementById('copyTemplateBtn').addEventListener('click', function() {
-            copyToClipboard('templateOutput', this);
-        });
-        document.getElementById('copyOptimizedBtn').addEventListener('click', function() {
-            copyToClipboard('optimizedPrompt', this);
-        });
-
-        // Set up template card listeners
-        const templateCards = document.querySelectorAll('.template-card');
-        templateCards.forEach(card => {
-            card.addEventListener('click', function() {
-                const templateType = this.getAttribute('data-template');
-                loadTemplate(templateType);
-            });
-        });
-
-        // Set up task type change listener
-        document.getElementById('taskType').addEventListener('change', updateGuidance);
-    }
-
-    // Tab switching
-    function switchTab(tabName) {
-        // Update app state
-        AppState.currentTab = tabName;
-
-        // Hide all tab contents
-        const contents = document.querySelectorAll('.tab-content');
-        contents.forEach(content => content.classList.remove('active'));
-
-        // Remove active class from all tabs
-        const tabs = document.querySelectorAll('.tab');
-        tabs.forEach(tab => tab.classList.remove('active'));
-
-        // Show selected tab content
-        const selectedContent = document.getElementById(tabName);
-        if (selectedContent) {
-            selectedContent.classList.add('active');
+    // Show specific section
+    function showSection(sectionName) {
+        // Hide all sections
+        var sections = document.querySelectorAll('.section');
+        for (var i = 0; i < sections.length; i++) {
+            sections[i].classList.add('hidden');
         }
-
-        // Mark clicked tab as active
-        const selectedTab = document.querySelector(`[data-tab="${tabName}"]`);
-        if (selectedTab) {
-            selectedTab.classList.add('active');
-        }
-    }
-
-    // Dynamic guidance
-    function updateGuidance() {
-        const taskType = document.getElementById('taskType').value;
-        const guidanceDiv = document.getElementById('promptGuidance');
         
-        const guidance = {
+        // Show the selected section
+        var targetSection = document.getElementById(sectionName);
+        if (targetSection) {
+            targetSection.classList.remove('hidden');
+        }
+    }
+
+    // Update guidance based on task type
+    function updateGuidance() {
+        var taskType = document.getElementById('taskType').value;
+        var guidanceDiv = document.getElementById('promptGuidance');
+        
+        var guidance = {
             writing: {
                 title: "✍️ Writing & Content Tips",
                 tips: [
                     "Specify the target audience and tone",
-                    "Mention desired word count or length",
+                    "Mention desired word count or length", 
                     "Include the purpose (inform, persuade, entertain)",
                     "Provide context about the topic and angle"
                 ]
@@ -689,7 +488,7 @@ Use simple language and build concepts progressively.`
                 ]
             },
             coding: {
-                title: "💻 Programming Tips",
+                title: "💻 Programming Tips", 
                 tips: [
                     "Specify the programming language",
                     "Describe the expected input and output",
@@ -701,7 +500,7 @@ Use simple language and build concepts progressively.`
                 title: "🎨 Creative Tips",
                 tips: [
                     "Set the creative constraints or theme",
-                    "Specify the target audience or use case",
+                    "Specify the target audience or use case", 
                     "Mention the desired tone or style",
                     "Ask for multiple options or variations"
                 ]
@@ -720,43 +519,42 @@ Use simple language and build concepts progressively.`
                 tips: [
                     "Specify your current knowledge level",
                     "Mention your learning goals",
-                    "Ask for examples and practical applications",
+                    "Ask for examples and practical applications", 
                     "Request explanations in simple terms"
                 ]
             }
         };
 
         if (taskType && guidance[taskType]) {
-            const g = guidance[taskType];
-            guidanceDiv.innerHTML = `
-                <h4>${g.title}</h4>
-                <ul>
-                    ${g.tips.map(tip => `<li>${tip}</li>`).join('')}
-                </ul>
-            `;
-            guidanceDiv.style.display = 'block';
+            var g = guidance[taskType];
+            var tipsList = '';
+            for (var i = 0; i < g.tips.length; i++) {
+                tipsList += '<li>' + g.tips[i] + '</li>';
+            }
+            guidanceDiv.innerHTML = '<h4>' + g.title + '</h4><ul>' + tipsList + '</ul>';
+            guidanceDiv.classList.remove('hidden');
         } else {
-            guidanceDiv.style.display = 'none';
+            guidanceDiv.classList.add('hidden');
         }
     }
 
     // Generate optimized prompt
     function generatePrompt() {
-        const taskType = document.getElementById('taskType').value;
-        const goal = document.getElementById('goal').value;
-        const context = document.getElementById('context').value;
-        const format = document.getElementById('format').value;
-        const constraints = document.getElementById('constraints').value;
+        var taskType = document.getElementById('taskType').value;
+        var goal = document.getElementById('goal').value;
+        var context = document.getElementById('context').value;
+        var format = document.getElementById('format').value;
+        var constraints = document.getElementById('constraints').value;
 
         if (!goal.trim()) {
             alert('Please describe your specific goal or question.');
             return;
         }
 
-        let prompt = '';
+        var prompt = '';
         
         // Add role setting based on task type
-        const roles = {
+        var roles = {
             writing: "Act as a professional content writer and editor.",
             analysis: "Act as a data analyst and researcher.",
             coding: "Act as an experienced software developer and coding mentor.",
@@ -774,12 +572,12 @@ Use simple language and build concepts progressively.`
 
         // Add context if provided
         if (context.trim()) {
-            prompt += `\n\nContext: ${context}`;
+            prompt += '\n\nContext: ' + context;
         }
 
         // Add format requirements
         if (format) {
-            const formatInstructions = {
+            var formatInstructions = {
                 'bullet-points': 'Please format your response as clear bullet points.',
                 'numbered-list': 'Please format your response as a numbered list.',
                 'paragraph': 'Please provide your response in well-structured paragraphs.',
@@ -788,78 +586,87 @@ Use simple language and build concepts progressively.`
                 'code': 'Please provide your response as a code snippet with comments.'
             };
             if (formatInstructions[format]) {
-                prompt += `\n\n${formatInstructions[format]}`;
+                prompt += '\n\n' + formatInstructions[format];
             }
         }
 
         // Add constraints
         if (constraints.trim()) {
-            prompt += `\n\nRequirements: ${constraints}`;
+            prompt += '\n\nRequirements: ' + constraints;
         }
 
         // Display the generated prompt
         document.getElementById('promptOutput').textContent = prompt;
-        document.getElementById('copyBtn').style.display = 'block';
 
-        // Generate AI suggestions
-        generateSuggestions(prompt, taskType);
+        // Generate suggestions
+        generateSuggestions(prompt);
     }
 
     // Generate improvement suggestions
-    function generateSuggestions(prompt, taskType) {
-        const suggestionsDiv = document.getElementById('aiSuggestions');
-        
-        // Simple analysis - check for common improvements
-        const improvements = [];
+    function generateSuggestions(prompt) {
+        var suggestionsDiv = document.getElementById('aiSuggestions');
+        var improvements = [];
         
         if (prompt.length < 100) {
             improvements.push("Your prompt could benefit from more detail and context");
         }
         
-        if (!prompt.includes('example') && !prompt.includes('format')) {
+        if (prompt.indexOf('example') === -1 && prompt.indexOf('format') === -1) {
             improvements.push("Consider adding examples or specifying the desired format");
         }
         
-        if (!prompt.toLowerCase().includes('tone') && !prompt.toLowerCase().includes('style')) {
+        if (prompt.toLowerCase().indexOf('tone') === -1 && prompt.toLowerCase().indexOf('style') === -1) {
             improvements.push("Specifying the tone or style could improve results");
         }
 
         if (improvements.length > 0) {
-            suggestionsDiv.innerHTML = `
-                <h4>🎯 AI-Powered Suggestions</h4>
-                <ul>
-                    ${improvements.map(imp => `<li>${imp}</li>`).join('')}
-                </ul>
-            `;
-            suggestionsDiv.style.display = 'block';
+            var improvementsList = '';
+            for (var i = 0; i < improvements.length; i++) {
+                improvementsList += '<li>' + improvements[i] + '</li>';
+            }
+            suggestionsDiv.innerHTML = '<h4>🎯 AI-Powered Suggestions</h4><ul>' + improvementsList + '</ul>';
+            suggestionsDiv.classList.remove('hidden');
         } else {
-            suggestionsDiv.style.display = 'none';
+            suggestionsDiv.classList.add('hidden');
         }
     }
 
     // Load template
     function loadTemplate(type) {
-        const template = AppState.templates[type];
+        var templates = {
+            writing: 'Act as a professional content writer with expertise in [TOPIC/INDUSTRY].\n\nWrite a [TYPE OF CONTENT] about [SPECIFIC TOPIC] for [TARGET AUDIENCE].\n\nContext:\n- Purpose: [inform/persuade/entertain]\n- Tone: [professional/casual/friendly/authoritative]\n- Key points to cover: [LIST KEY POINTS]\n\nRequirements:\n- Length: [WORD COUNT]\n- Include relevant examples\n- Use engaging headlines/subheadings\n- Optimize for readability\n\nPlease structure the content with clear sections and provide actionable insights.',
+            
+            email: 'Act as a professional communication specialist.\n\nCompose a [TYPE OF EMAIL] to [RECIPIENT] regarding [SUBJECT/PURPOSE].\n\nContext:\n- Relationship: [professional/personal/first contact]\n- Previous interaction: [BACKGROUND]\n- Desired outcome: [WHAT YOU WANT TO ACHIEVE]\n\nRequirements:\n- Tone: [professional/friendly/formal]\n- Length: [brief/detailed]\n- Include clear call-to-action\n- Maintain professional etiquette\n\nPlease structure with appropriate greeting, body, and closing.',
+            
+            code: 'Act as an experienced [PROGRAMMING LANGUAGE] developer.\n\nHelp me [SPECIFIC CODING TASK] for [PROJECT CONTEXT].\n\nRequirements:\n- Input: [DESCRIBE INPUT DATA/PARAMETERS]\n- Expected output: [DESCRIBE DESIRED OUTPUT]\n- Constraints: [PERFORMANCE/STYLE/FRAMEWORK REQUIREMENTS]\n- Environment: [RELEVANT TECHNICAL DETAILS]\n\nPlease provide:\n- Clean, well-commented code\n- Explanation of the approach\n- Any potential edge cases to consider\n- Suggestions for testing or improvement',
+            
+            analysis: 'Act as a data analyst and strategic consultant.\n\nAnalyze [DATA/SITUATION/TOPIC] to provide insights about [SPECIFIC QUESTION/GOAL].\n\nContext:\n- Background: [RELEVANT CONTEXT]\n- Stakeholders: [WHO WILL USE THIS ANALYSIS]\n- Decision to be made: [WHAT THIS ANALYSIS WILL INFORM]\n\nPlease provide:\n- Key findings and trends\n- Actionable recommendations\n- Supporting evidence/reasoning\n- Potential risks or limitations\n\nFormat as [executive summary/detailed report/presentation slides].',
+            
+            creative: 'Act as a creative consultant and brainstorming facilitator.\n\nGenerate creative ideas for [PROJECT/CHALLENGE] targeted at [AUDIENCE].\n\nContext:\n- Objective: [WHAT YOU\'RE TRYING TO ACHIEVE]\n- Brand/style: [RELEVANT BRAND GUIDELINES OR PREFERENCES]\n- Constraints: [BUDGET/TIME/TECHNICAL LIMITATIONS]\n- Inspiration: [ANY REFERENCES OR EXAMPLES]\n\nPlease provide:\n- 5-10 diverse creative concepts\n- Brief explanation for each idea\n- Pros and cons of top options\n- Next steps for development\n\nFocus on originality and practical feasibility.',
+            
+            learning: 'Act as a knowledgeable instructor and learning facilitator.\n\nExplain [TOPIC/CONCEPT] to someone with [CURRENT KNOWLEDGE LEVEL] who wants to [LEARNING GOAL].\n\nContext:\n- Background: [RELEVANT EXPERIENCE OR CONTEXT]\n- Learning style: [VISUAL/AUDITORY/HANDS-ON/READING]\n- Timeline: [HOW QUICKLY THEY NEED TO LEARN]\n- Application: [HOW THEY\'LL USE THIS KNOWLEDGE]\n\nPlease provide:\n- Clear, step-by-step explanation\n- Real-world examples and analogies\n- Practice exercises or applications\n- Resources for further learning\n- Common mistakes to avoid\n\nUse simple language and build concepts progressively.'
+        };
+
+        var template = templates[type];
         if (template) {
-            const templateOutput = document.getElementById('templateOutput');
+            var templateOutput = document.getElementById('templateOutput');
             templateOutput.textContent = template;
-            templateOutput.style.display = 'block';
+            templateOutput.classList.remove('hidden');
         }
     }
 
     // Analyze prompt
     function analyzePrompt() {
-        const prompt = document.getElementById('analyzePrompt').value;
+        var prompt = document.getElementById('analyzePrompt').value;
         
         if (!prompt.trim()) {
             alert('Please enter a prompt to analyze.');
             return;
         }
 
-        // Simple analysis scoring
-        let score = 0;
-        const issues = [];
-        const improvements = [];
+        var score = 0;
+        var issues = [];
+        var improvements = [];
 
         // Check length
         if (prompt.length < 50) {
@@ -871,7 +678,7 @@ Use simple language and build concepts progressively.`
         }
 
         // Check for context
-        if (prompt.toLowerCase().includes('context') || prompt.toLowerCase().includes('background')) {
+        if (prompt.toLowerCase().indexOf('context') > -1 || prompt.toLowerCase().indexOf('background') > -1) {
             score += 15;
         } else {
             issues.push('No explicit context provided');
@@ -879,116 +686,128 @@ Use simple language and build concepts progressively.`
         }
 
         // Check for specificity
-        const specificWords = ['specific', 'exactly', 'precisely', 'detailed', 'particular'];
-        if (specificWords.some(word => prompt.toLowerCase().includes(word))) {
+        var specificWords = ['specific', 'exactly', 'precisely', 'detailed', 'particular'];
+        var hasSpecific = false;
+        for (var i = 0; i < specificWords.length; i++) {
+            if (prompt.toLowerCase().indexOf(specificWords[i]) > -1) {
+                hasSpecific = true;
+                break;
+            }
+        }
+        if (hasSpecific) {
             score += 10;
         } else {
             improvements.push('Be more specific about what you want');
         }
 
         // Check for format instruction
-        const formatWords = ['format', 'structure', 'organize', 'bullet', 'list', 'paragraph'];
-        if (formatWords.some(word => prompt.toLowerCase().includes(word))) {
+        var formatWords = ['format', 'structure', 'organize', 'bullet', 'list', 'paragraph'];
+        var hasFormat = false;
+        for (var i = 0; i < formatWords.length; i++) {
+            if (prompt.toLowerCase().indexOf(formatWords[i]) > -1) {
+                hasFormat = true;
+                break;
+            }
+        }
+        if (hasFormat) {
             score += 15;
         } else {
             improvements.push('Specify the desired output format');
         }
 
         // Check for role assignment
-        if (prompt.toLowerCase().includes('act as') || prompt.toLowerCase().includes('you are')) {
+        if (prompt.toLowerCase().indexOf('act as') > -1 || prompt.toLowerCase().indexOf('you are') > -1) {
             score += 15;
         } else {
             improvements.push('Consider assigning a specific role to the AI');
         }
 
         // Check for examples
-        if (prompt.toLowerCase().includes('example') || prompt.toLowerCase().includes('for instance')) {
+        if (prompt.toLowerCase().indexOf('example') > -1 || prompt.toLowerCase().indexOf('for instance') > -1) {
             score += 10;
         } else {
             improvements.push('Consider providing examples to clarify your request');
         }
 
         // Generate optimized version
-        let optimized = prompt;
+        var optimized = prompt;
         
-        if (!prompt.toLowerCase().includes('act as')) {
+        if (prompt.toLowerCase().indexOf('act as') === -1) {
             optimized = 'Act as an expert assistant. ' + optimized;
         }
         
-        if (!formatWords.some(word => prompt.toLowerCase().includes(word))) {
+        if (!hasFormat) {
             optimized += '\n\nPlease structure your response clearly and provide detailed explanations.';
         }
 
         // Display results
-        document.getElementById('analysisScore').innerHTML = `
-            <strong>Prompt Quality Score: ${score}/85</strong>
-            <div style="background: linear-gradient(90deg, #10b981 0%, #10b981 ${(score/85)*100}%, #e5e7eb ${(score/85)*100}%, #e5e7eb 100%); height: 10px; border-radius: 5px; margin: 10px 0;"></div>
-        `;
+        var scorePercent = Math.round((score / 85) * 100);
+        document.getElementById('analysisScore').innerHTML = '<strong>Prompt Quality Score: ' + score + '/85 (' + scorePercent + '%)</strong><div style="background: linear-gradient(90deg, #10b981 0%, #10b981 ' + scorePercent + '%, #e5e7eb ' + scorePercent + '%, #e5e7eb 100%); height: 10px; border-radius: 5px; margin: 10px 0;"></div>';
 
-        document.getElementById('analysisIssues').innerHTML = issues.length > 0 ? 
-            '<strong>Issues Found:</strong><ul>' + issues.map(issue => `<li>${issue}</li>`).join('') + '</ul>' : 
-            '<strong>✅ No major issues found!</strong>';
+        var issuesHtml = issues.length > 0 ? '<strong>Issues Found:</strong><ul>' : '<strong>✅ No major issues found!</strong>';
+        for (var i = 0; i < issues.length; i++) {
+            issuesHtml += '<li>' + issues[i] + '</li>';
+        }
+        if (issues.length > 0) issuesHtml += '</ul>';
+        document.getElementById('analysisIssues').innerHTML = issuesHtml;
 
-        document.getElementById('improvements').innerHTML = improvements.length > 0 ?
-            '<ul>' + improvements.map(imp => `<li>${imp}</li>`).join('') + '</ul>' :
-            'Your prompt looks good! No major improvements needed.';
+        var improvementsHtml = improvements.length > 0 ? '<ul>' : 'Your prompt looks good! No major improvements needed.';
+        for (var i = 0; i < improvements.length; i++) {
+            improvementsHtml += '<li>' + improvements[i] + '</li>';
+        }
+        if (improvements.length > 0) improvementsHtml += '</ul>';
+        document.getElementById('improvements').innerHTML = improvementsHtml;
 
         document.getElementById('optimizedPrompt').textContent = optimized;
-        document.getElementById('analysisResults').style.display = 'block';
+        document.getElementById('analysisResults').classList.remove('hidden');
     }
 
-    // Copy to clipboard function
-    function copyToClipboard(elementId, button) {
-        const text = document.getElementById(elementId).textContent;
+    // Copy text to clipboard
+    function copyText(elementId) {
+        var element = document.getElementById(elementId);
+        var text = element.textContent;
         
+        // Try modern clipboard API first
         if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(text).then(() => {
-                showCopySuccess(button);
-            }).catch(() => {
-                fallbackCopyTextToClipboard(text, button);
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Copied to clipboard!');
+            }).catch(function() {
+                fallbackCopy(text);
             });
         } else {
-            fallbackCopyTextToClipboard(text, button);
+            fallbackCopy(text);
         }
     }
 
-    // Show copy success feedback
-    function showCopySuccess(button) {
-        const originalText = button.textContent;
-        button.textContent = 'Copied!';
-        button.style.background = '#10b981';
-        setTimeout(() => {
-            button.textContent = originalText;
-            button.style.background = '#6366f1';
-        }, 2000);
-    }
-
-    // Fallback copy function for older browsers
-    function fallbackCopyTextToClipboard(text, button) {
-        const textArea = document.createElement("textarea");
+    // Fallback copy method
+    function fallbackCopy(text) {
+        var textArea = document.createElement('textarea');
         textArea.value = text;
-        textArea.style.top = "0";
-        textArea.style.left = "0";
-        textArea.style.position = "fixed";
-        textArea.style.opacity = "0";
-
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
         document.body.appendChild(textArea);
         textArea.focus();
         textArea.select();
-
+        
         try {
-            const successful = document.execCommand('copy');
+            var successful = document.execCommand('copy');
             if (successful) {
-                showCopySuccess(button);
+                alert('Copied to clipboard!');
             } else {
                 alert('Copy failed. Please select and copy manually.');
             }
         } catch (err) {
             alert('Copy failed. Please select and copy manually.');
         }
-
+        
         document.body.removeChild(textArea);
     }
+
+    // Initialize app - show builder section by default
+    window.onload = function() {
+        showSection('builder');
+    };
 </script>
 ```
 
