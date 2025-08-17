@@ -322,6 +322,14 @@
             <button class="btn" onclick="generatePrompt()">Generate Optimized Prompt</button>
             <button class="btn btn-secondary" onclick="refineWithAI()" style="background: #f59e0b; color: white; margin-top: 5px;">🤖 AI-Powered Language Cleanup</button>
             
+            <div class="shortcut-actions" id="shortcutActions" style="display: none; margin-top: 15px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button class="btn" onclick="copyAndOpenAI()" style="background: #10b981;">📋➡️ Copy & Open ChatGPT</button>
+                    <button class="btn" onclick="copyAndOpenClaude()" style="background: #8b5cf6;">📋➡️ Copy & Open Claude</button>
+                </div>
+                <button class="btn" onclick="quickCopyPrompt()" style="background: #f59e0b; margin-top: 10px;">⚡ Quick Copy to Clipboard</button>
+            </div>
+            
             <div id="promptGuidance" class="suggestions hidden"></div>
             
             <div class="output-box" id="promptOutput">Your optimized prompt will appear here...</div>
@@ -414,18 +422,37 @@
         </div>
 
         <!-- Guide Section -->
+        <!-- Guide Section -->
         <div id="guide" class="section hidden">
-            <h2>Prompt Engineering Masterclass</h2>
+            <h2>iPhone Shortcuts Integration</h2>
             
-            <div class="tips">
-                <h4>🎯 The CLEAR Framework (Anthropic/OpenAI Best Practices)</h4>
+            <div class="url-params-info">
+                <h4>📱 iPhone Shortcuts Setup</h4>
+                <p><strong>Your app supports URL parameters for automation!</strong></p>
+                <p>Example URL for Shortcuts:</p>
+                <code>https://eli-ghc.github.io/prompt-engineer/?goal=Write%20a%20professional%20email&taskType=writing&context=Marketing%20agency</code>
+                
+                <p style="margin-top: 15px;"><strong>Supported Parameters:</strong></p>
                 <ul>
-                    <li><strong>Context:</strong> Provide relevant background and situational information</li>
-                    <li><strong>Length:</strong> Specify desired output length and detail level</li>
-                    <li><strong>Examples:</strong> Include 1-3 examples to demonstrate expected format</li>
-                    <li><strong>Audience:</strong> Define who will use this output and their expertise level</li>
-                    <li><strong>Role:</strong> Assign a specific expert role with credentials</li>
+                    <li><code>goal</code> - Your main prompt text</li>
+                    <li><code>taskType</code> - writing, coding, analysis, creative, problem-solving, learning</li>
+                    <li><code>context</code> - Background information</li>
+                    <li><code>constraints</code> - Requirements and limitations</li>
+                    <li><code>format</code> - bullet-points, numbered-list, paragraph, step-by-step, table, code</li>
+                    <li><code>autoGenerate=true</code> - Automatically generate prompt on load</li>
                 </ul>
+            </div>
+
+            <div class="tips">
+                <h4>🔗 iPhone Shortcut Workflow</h4>
+                <ol>
+                    <li><strong>Text Input:</strong> Get text from share sheet or manual input</li>
+                    <li><strong>Open URL:</strong> Launch app with pre-filled parameters</li>
+                    <li><strong>Wait/Delay:</strong> Give app time to load and auto-generate</li>
+                    <li><strong>Get Clipboard:</strong> App automatically copies optimized prompt</li>
+                    <li><strong>Open AI App:</strong> Launch ChatGPT/Claude with clipboard content</li>
+                    <li><strong>Optional:</strong> Send AI response to Notion via API</li>
+                </ol>
             </div>
 
             <div class="suggestions">
@@ -599,6 +626,9 @@
 
         // Display the generated prompt
         document.getElementById('promptOutput').textContent = prompt;
+
+        // Show shortcut actions
+        document.getElementById('shortcutActions').style.display = 'block';
 
         // Generate AI-powered suggestions
         generateSuggestions(prompt, taskType, goal);
